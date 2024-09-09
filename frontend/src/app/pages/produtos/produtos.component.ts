@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, inject, OnInit, ViewChild} from "@angular/core";
-import { Produtos } from "../../core/type/type";
+import { DadosFiltragem, Produtos } from "../../core/type/type";
 import { HttpClient } from "@angular/common/http";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -12,19 +12,21 @@ import { ProdutosService } from "../../core/services/produtos/produtos.service";
 })
 export class ProdutosComponent implements OnInit {
 
-  listaProdutos: MatTableDataSource<Produtos>
+  listaProdutos: MatTableDataSource<Produtos>;
+  maxPreco: number = 0;
+  maxQuantidade: number = 0;
   displayedColumns: string[] = [
     'nomeProduto',
     'quantidadeTotal',
     'quantidadeDefeitos',
     'quantidadeDisponivelVenda',
     'preco'
-  ]
+  ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  httpClient = inject(HttpClient)
+  httpClient = inject(HttpClient);
 
   constructor(private produtosService: ProdutosService) { }
 
@@ -35,7 +37,47 @@ export class ProdutosComponent implements OnInit {
         this.listaProdutos.paginator = this.paginator
         this.listaProdutos.sort = this.sort
       }
-    )
+    );
   }
+
+  filtrar(event: any) {
+    const valorFiltro = event.target.value.trim().toLowerCase();
+
+    this.listaProdutos.filter = valorFiltro;
+
+    this.listaProdutos.filterPredicate = (data: Produtos, filter: string) => {
+      return data.nomeProduto.toLowerCase().includes(filter);
+    };
+
+    if (this.listaProdutos.paginator) {
+      this.listaProdutos.paginator.firstPage();
+    }
+  }
+
+  busca(event: DadosFiltragem) {
+    const quantidadeIntervalo = (quantidadeTotal: number) => {
+      switch (quantidadeTotal) {
+        case 1: return 10;
+        case 2: return 25;
+        case 3: return 50;
+        case 4: return 100;
+        case 5: return 250;
+        case 6: return 500;
+        case 7: return 1000;
+        default: return 0;
+      }
+    };
+
+    this.listaProdutos.filterPredicate = (data: Produtos, filter: string) => {
+      const matchesPreco = (!event.precoMin || data.preco >= event.precoMin) && (!event.precoMax || data.preco <= event.precoMax);
+      const matchesQuantidade = !quantidadeIntervalo(event.quantidadeTotal) ||
+        data.quantidadeTotal >= quantidadeIntervalo(event.quantidadeTotal);
+
+      return matchesPreco && matchesQuantidade;
+    };
+
+    this.listaProdutos.filter = 'filter';
+  }
+
 
 }
