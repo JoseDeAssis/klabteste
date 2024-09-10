@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ProdutosService } from '../../core/services/produtos/produtos.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalComponent } from './modal/modal.component';
 
 @Component({
   selector: 'app-detalhes',
@@ -16,7 +18,8 @@ export class DetalhesComponent implements OnInit {
 
   constructor(
     private produtosService: ProdutosService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private openDialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -39,7 +42,11 @@ export class DetalhesComponent implements OnInit {
     })
   }
 
-  voltar() {
-    console.log("voltar")
+  cadastrarVenda() {
+    this.openDialog.open(ModalComponent, {
+      data: {
+        produto: this.produto
+      }
+    });
   }
 }

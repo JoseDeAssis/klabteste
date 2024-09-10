@@ -10,5 +10,17 @@
     width: 100%;
     margin-bottom: 16px;
   }
+
+  .card-actions {
+    display: flex;
+    justify-content: flex-end; // Alinha o botão à direita
+    margin-top: auto;
+
+    .mat-success {
+      background-color: green;
+      color: #fff;
+    }
+  }
+
 }
 
