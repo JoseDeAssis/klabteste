@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpserviceModule } from "../../modules/httpservice.module";
 import { ReactiveFormsModule } from '@angular/forms';
 import { DetalhesComponent } from "./detalhes.component";
@@ -22,6 +23,7 @@ const route = [{component: DetalhesComponent, path: ''}]
     MatIconModule,
     MatDialogModule,
     MatSelectModule,
+    MatSnackBarModule,
     SharedModule,
     ReactiveFormsModule,
     HttpserviceModule

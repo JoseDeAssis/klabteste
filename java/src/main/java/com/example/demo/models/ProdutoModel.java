@@ -104,6 +104,28 @@ public class ProdutoModel implements Produtos {
         }
     }
 
+    public void atualizarQuantidadeProduto(long produtoId, int quantidadeVendida) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            StringBuilder sqlUpdateProduto = new StringBuilder();
+            sqlUpdateProduto.append("UPDATE produtos SET quantidades = quantidades - ? WHERE id = ?");
+
+            connection = nativeScriptService.getConectionDb();
+            preparedStatement = nativeScriptService.getPreparedStatementDb(sqlUpdateProduto.toString(), connection);
+            preparedStatement.setInt(1, quantidadeVendida);
+            preparedStatement.setLong(2, produtoId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Erro ao atualizar quantidade de produto.", e.getMessage());
+        } finally {
+            if (connection != null) connection.close();
+            if (preparedStatement != null) preparedStatement.close();
+        }
+    }
+
     public void insertProduct(Map<String, Object> product) throws SQLException {
         try {
             StringBuilder sql = new StringBuilder();

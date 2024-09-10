@@ -3,11 +3,11 @@
   <div mat-dialog-content [formGroup]="vendaForm">
     <ul>
       <li>
-        <strong>{{ data.produto.nomeProduto }}</strong>
+        <strong>{{ produto.nomeProduto }}</strong>
       </li>
       <li>
         <strong>Preço: </strong
-        >{{ data.produto.preco | currency : "BRL" : "symbol" : "1.2-2" }}
+        >{{ produto.preco | currency : "BRL" : "symbol" : "1.2-2" }}
       </li>
     </ul>
 
@@ -24,7 +24,7 @@
       <mat-select formControlName="quantidade">
         <mat-option
           *ngFor="
-            let qtd of [].constructor(data.produto.quantidadeDisponivelVenda);
+            let qtd of [].constructor(produto.quantidadeDisponivelVenda);
             let i = index
           "
           [value]="i + 1"
@@ -36,6 +36,13 @@
         Selecione uma quantidade válida
       </mat-error>
     </mat-form-field>
+    <p>
+      Total à pagar:
+      {{
+        produto.preco * vendaForm.get("quantidade").value
+          | currency : "BRL" : "symbol" : "1.2-2"
+      }}
+    </p>
   </div>
 
   <div mat-dialog-actions class="modal-actions">
