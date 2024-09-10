@@ -22,6 +22,15 @@ public class ProdutosWs {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getProductById(@PathVariable long id) {
+        try {
+            return ResponseEntity.ok(produtos.getProductById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Deu erro");
+        }
+    }
+
     @PostMapping()
     public ResponseEntity<String> createProduct(@RequestBody Map<String, Object> product) {
         try {
