@@ -1,0 +1,54 @@
+<section class="modal">
+  <h1 mat-dialog-title>Cadastrar Venda</h1>
+  <div mat-dialog-content [formGroup]="vendaForm">
+    <ul>
+      <li>
+        <strong>{{ data.produto.nomeProduto }}</strong>
+      </li>
+      <li>
+        <strong>Preço: </strong
+        >{{ data.produto.preco | currency : "BRL" : "symbol" : "1.2-2" }}
+      </li>
+    </ul>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nome do Comprador</mat-label>
+      <input matInput formControlName="comprador" />
+      <mat-error *ngIf="vendaForm.get('comprador').invalid">
+        O nome do comprador é obrigatório
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Quantidade</mat-label>
+      <mat-select formControlName="quantidade">
+        <mat-option
+          *ngFor="
+            let qtd of [].constructor(data.produto.quantidadeDisponivelVenda);
+            let i = index
+          "
+          [value]="i + 1"
+        >
+          {{ i + 1 }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="vendaForm.get('quantidade').invalid">
+        Selecione uma quantidade válida
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions class="modal-actions">
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="vendaForm.invalid"
+      (click)="onSubmit()"
+    >
+      Comprar
+    </button>
+    <button mat-flat-button mat-dialog-close (click)="onCancel()">
+      Cancelar
+    </button>
+  </div>
+</section>

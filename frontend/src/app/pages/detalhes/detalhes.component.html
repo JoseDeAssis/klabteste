@@ -26,6 +26,11 @@
           [value]="produto.preco | currency : 'BRL' : 'symbol' : '1.2-2'"
         />
       </mat-form-field>
+      <div class="card-actions">
+        <button mat-raised-button color="success" (click)="cadastrarVenda()">
+          Cadastrar Venda
+        </button>
+      </div>
     </div>
   </app-card>
 </app-container>
