@@ -68,6 +68,42 @@ public class ProdutoModel implements Produtos {
         }
     }
 
+    public Object getProductById(long id) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            Map<String, Object> mapProduto = new HashMap<>();
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT * FROM produtos WHERE id = ?");
+
+            connection = nativeScriptService.getConectionDb();
+            preparedStatement = nativeScriptService.getPreparedStatementDb(sql.toString(), connection);
+            preparedStatement.setLong(1, id);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()){
+                int quantidadeTotal = rs.getInt("quantidades");
+                int quantidadeDefeitos = rs.getInt("defeitos");
+                int quantidadeDisponivelVenda = quantidadeTotal - quantidadeDefeitos;
+
+                mapProduto.put("id", rs.getObject("id"));
+                mapProduto.put("nomeProduto", rs.getObject("nome"));
+                mapProduto.put("quantidadeTotal", quantidadeTotal);
+                mapProduto.put("quantidadeDefeitos", quantidadeDefeitos);
+                mapProduto.put("quantidadeDisponivelVenda", quantidadeDisponivelVenda);
+                mapProduto.put("preco", rs.getObject("preco"));
+            }
+            return mapProduto;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao consultar produtos no banco de dados.", e.getMessage());
+        } finally {
+            connection.close();
+            preparedStatement.close();
+        }
+    }
+
     public void insertProduct(Map<String, Object> product) throws SQLException {
         try {
             StringBuilder sql = new StringBuilder();
