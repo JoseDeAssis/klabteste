@@ -5,6 +5,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import { ProdutosService } from "../../core/services/produtos/produtos.service";
+import { Router } from "@angular/router";
 
 @Component({
   templateUrl: "produtos.component.html",
@@ -20,7 +21,8 @@ export class ProdutosComponent implements OnInit {
     'quantidadeTotal',
     'quantidadeDefeitos',
     'quantidadeDisponivelVenda',
-    'preco'
+    'preco',
+    'acoes'
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -28,7 +30,10 @@ export class ProdutosComponent implements OnInit {
 
   httpClient = inject(HttpClient);
 
-  constructor(private produtosService: ProdutosService) { }
+  constructor(
+    private produtosService: ProdutosService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.produtosService.listar().subscribe(
@@ -79,5 +84,8 @@ export class ProdutosComponent implements OnInit {
     this.listaProdutos.filter = 'filter';
   }
 
+  detalhar(id: number) {
+    this.router.navigate([`produtos/${id}`]);
+  }
 
 }

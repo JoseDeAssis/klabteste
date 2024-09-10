@@ -22,6 +22,10 @@ export class ProdutosService {
     return this.listaProdutos$;
   }
 
+  detalharProduto(id: number): Observable<Produtos> {
+    return this.httpClient.get<Produtos>(`produtos/${id}`)
+  }
+
   procurarNome(nome: string): Observable<Produtos[]> {
     if(!this.listaProdutos$) return null;
 
