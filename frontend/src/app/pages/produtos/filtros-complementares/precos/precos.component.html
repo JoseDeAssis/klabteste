@@ -1,0 +1,30 @@
+<section
+  class="precos"
+  *ngIf="precoMaxDisplayed !== undefined && precoMinDisplayed !== undefined"
+>
+  <app-label texto="Preço" />
+  <div class="labels">
+    <div class="label-container">
+      <label for="preco-minimo" class="name-label">De</label>
+      <p>{{ precoMinForm.value | currency : "BRL" }}</p>
+    </div>
+    <div class="label-container">
+      <label for="preco-maximo">Até</label>
+      <p>{{ precoMaxForm.value | currency : "BRL" }}</p>
+    </div>
+  </div>
+  <mat-slider [min]="produtosService.precoMin" [max]="produtosService.precoMax">
+    <input
+      id="preco-minimo"
+      matSliderStartThumb
+      [formControl]="precoMinForm"
+      (change)="atualizaMin($event)"
+    />
+    <input
+      id="preco-maximo"
+      matSliderEndThumb
+      [formControl]="precoMaxForm"
+      (change)="atualizaMax($event)"
+    />
+  </mat-slider>
+</section>

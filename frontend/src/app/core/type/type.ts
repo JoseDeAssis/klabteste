@@ -6,3 +6,14 @@ export interface Produtos {
   quantidadeDisponivelVenda: number,
   preco: number
 }
+
+export interface OpcoesQuantidadeTotal {
+  display: string,
+  value: string
+}
+
+export interface DadosFiltragem {
+  precoMax: number,
+  precoMin: number,
+  quantidadeTotal: number
+}
