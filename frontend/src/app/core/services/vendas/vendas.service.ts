@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { dadosCadastroVenda } from '../../type/type';
+import { dadosCadastroVenda, Vendas } from '../../type/type';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -12,5 +12,9 @@ export class VendasService {
 
   cadastrarVenda(dados: dadosCadastroVenda): Observable<{response: string}> {
     return this.httpClient.post<{response: string}>('vendas', dados);
+  }
+
+  listar(): Observable<Vendas[]> {
+    return this.httpClient.get<Vendas[]>('vendas');
   }
 }

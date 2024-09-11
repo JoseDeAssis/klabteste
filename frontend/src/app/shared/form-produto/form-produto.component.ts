@@ -48,6 +48,8 @@ export class FormProdutoComponent implements OnInit {
       this.form.get('quantidadeTotal').disable();
       this.form.get('quantidadeDefeitos').disable();
       this.form.get('preco').disable();
+      this.textoBotao = 'Cadastrar Venda';
+      this.textoH1 = 'Detalhes do Produto';
     }
 
     this.formularioService.setForm(this.form);
