@@ -9,7 +9,11 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -20,6 +24,47 @@ public class VendaModel implements Vendas {
 
     @Autowired
     private ProdutoModel produtoModel;
+
+    @Override
+    public Object getAllSales() throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            List<Map<String, Object>> listMap = new ArrayList<>();
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT v.id, v.comprador, v.produto_id, v.quantidades, v.total_venda, p.nome ");
+            sql.append("FROM vendas v ");
+            sql.append("JOIN produtos p ON v.produto_id = p.id;");
+
+            connection = nativeScriptService.getConectionDb();
+            preparedStatement = nativeScriptService.getPreparedStatementDb(sql.toString(), connection);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+
+                Map<String,Object> map = new HashMap<>();
+                map.put("vendaId", rs.getObject("id"));
+                map.put("nomeComprador", rs.getObject("comprador"));
+                map.put("produtoId", rs.getObject("produto_id"));
+                map.put("quantidadeComprada", rs.getObject("quantidades"));
+                map.put("valorTotal", rs.getObject("total_venda"));
+                map.put("nomeProduto", rs.getObject("nome"));
+
+                listMap.add(map);
+            }
+            return listMap;
+        } catch (SQLException e) {
+            System.out.println("Erro ao consultar vendas: " + e.getMessage());
+            e.printStackTrace();
+            throw new SQLException("Erro ao consultar vendas no banco de dados.", e.getMessage());
+        } finally {
+            //Fechamento das conexões
+            connection.close();
+            preparedStatement.close();
+        }
+    }
 
     @Override
     @Transactional
