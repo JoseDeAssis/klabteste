@@ -1,0 +1,44 @@
+<app-container class="form-produto">
+  <h1>{{ textoH1 }}</h1>
+
+  <app-card variant="primary">
+    <div class="card-content">
+      <form [formGroup]="form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nome do Produto</mat-label>
+          <input matInput formControlName="nome" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Quantidade Total do Produto</mat-label>
+          <input matInput formControlName="quantidadeTotal" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Quantidade de Produtos com Defeitos</mat-label>
+          <input matInput formControlName="quantidadeDefeitos" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Preço</mat-label>
+          <input matInput formControlName="preco" />
+          <mat-error *ngIf="form.get('preco')?.errors"
+            >Valor tem que ser igual ou superior ao anterior(R${{
+              produto.preco
+            }})</mat-error
+          >
+        </mat-form-field>
+        <div class="card-actions">
+          <button
+            mat-raised-button
+            [color]="detalhesComponent ? 'success' : 'primary'"
+            (click)="realizarAcao()"
+            [disabled]="form.get('preco')?.invalid"
+          >
+            {{ textoBotao }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </app-card>
+</app-container>

@@ -1,0 +1,6 @@
+<app-form-produto
+  [detalhesComponent]="detalhesComponent"
+  [produto]="produto"
+  (acaoRealizada)="cadastrarVenda()"
+  *ngIf="produto"
+/>

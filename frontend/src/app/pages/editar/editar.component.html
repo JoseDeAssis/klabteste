@@ -1,0 +1,6 @@
+<app-form-produto
+  [editarProdutoComponent]="editarProdutoComponent"
+  [produto]="produto"
+  (acaoRealizada)="salvarAlteracoes()"
+  *ngIf="produto"
+/>

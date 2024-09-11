@@ -1,0 +1,26 @@
+.app-header {
+  .mat-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: black;
+    color: white;
+    padding: 10px 0 10px 5%;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+
+    img {
+      max-width: 200px;
+      width: 100%;
+    }
+  }
+  button {
+    margin: 0 16px;
+    color: white;
+  }
+
+  .example-spacer {
+    flex: 1 1 auto;
+  }
+}

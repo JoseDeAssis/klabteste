@@ -5,6 +5,8 @@ import com.example.demo.services.NativeScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,9 +45,16 @@ public class ProdutoModel implements Produtos {
             //Conversão e retorno das informações
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()){
+                int quantidadeTotal = rs.getInt("quantidades");
+                int quantidadeDefeitos = rs.getInt("defeitos");
+                int quantidadeDisponivelVenda = quantidadeTotal - quantidadeDefeitos;
+
                 Map<String,Object> map = new HashMap<>();
                 map.put("id", rs.getObject("id"));
-                map.put("nome", rs.getObject("nome"));
+                map.put("nomeProduto", rs.getObject("nome"));
+                map.put("quantidadeTotal", quantidadeTotal);
+                map.put("quantidadeDefeitos", quantidadeDefeitos);
+                map.put("quantidadeDisponivelVenda", quantidadeDisponivelVenda);
                 map.put("preco", rs.getObject("preco"));
                 listMap.add(map);
             }
@@ -58,6 +67,116 @@ public class ProdutoModel implements Produtos {
             //Fechamento das conexões
             connection.close();
             preparedStatement.close();
+        }
+    }
+
+    public Object getProductById(long id) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            Map<String, Object> mapProduto = new HashMap<>();
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT * FROM produtos WHERE id = ?");
+
+            connection = nativeScriptService.getConectionDb();
+            preparedStatement = nativeScriptService.getPreparedStatementDb(sql.toString(), connection);
+            preparedStatement.setLong(1, id);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()){
+                int quantidadeTotal = rs.getInt("quantidades");
+                int quantidadeDefeitos = rs.getInt("defeitos");
+                int quantidadeDisponivelVenda = quantidadeTotal - quantidadeDefeitos;
+
+                mapProduto.put("id", rs.getObject("id"));
+                mapProduto.put("nomeProduto", rs.getObject("nome"));
+                mapProduto.put("quantidadeTotal", quantidadeTotal);
+                mapProduto.put("quantidadeDefeitos", quantidadeDefeitos);
+                mapProduto.put("quantidadeDisponivelVenda", quantidadeDisponivelVenda);
+                mapProduto.put("preco", rs.getObject("preco"));
+            }
+            return mapProduto;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao consultar produtos no banco de dados.", e.getMessage());
+        } finally {
+            connection.close();
+            preparedStatement.close();
+        }
+    }
+
+    public void atualizarQuantidadeProduto(long produtoId, int quantidadeVendida) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            StringBuilder sqlUpdateProduto = new StringBuilder();
+            sqlUpdateProduto.append("UPDATE produtos SET quantidades = quantidades - ? WHERE id = ?");
+
+            connection = nativeScriptService.getConectionDb();
+            preparedStatement = nativeScriptService.getPreparedStatementDb(sqlUpdateProduto.toString(), connection);
+            preparedStatement.setInt(1, quantidadeVendida);
+            preparedStatement.setLong(2, produtoId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Erro ao atualizar quantidade de produto.", e.getMessage());
+        } finally {
+            if (connection != null) connection.close();
+            if (preparedStatement != null) preparedStatement.close();
+        }
+    }
+
+    @Transactional
+    public void atualizarPrecoEQuantidadeProduto(long id, Map<String, Object> product) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            Map<String, Object> produto = (Map<String, Object>) this.getProductById(id);
+            double precoProdutoAtualizado;
+
+            if(product.get("preco") instanceof  Integer) {
+                precoProdutoAtualizado = (int) product.get("preco");
+            } else if(product.get("preco") instanceof  Double) {
+                precoProdutoAtualizado = (double) product.get("preco");
+            } else {
+                throw new IllegalArgumentException("O tipo de 'preco' não é suportado.");
+            }
+            BigDecimal precoProdutoAtualBD = (BigDecimal) produto.get("preco");
+            double precoProdutoAtual = precoProdutoAtualBD.doubleValue();
+
+            if(precoProdutoAtualizado < precoProdutoAtual)
+                throw new IllegalArgumentException("O preço não pode ser reduzido.");
+
+            int novaQuantidadeDefeitos = (int) product.get("quantidadeDefeitos");
+            int quantidadeTotal = (int) produto.get("quantidadeTotal");
+
+            if(novaQuantidadeDefeitos < 0)
+                throw new IllegalArgumentException("A quantidade de produtos com defeitos não " +
+                        "pode ser negativa");
+
+            if(novaQuantidadeDefeitos > quantidadeTotal) {
+                throw new IllegalArgumentException("A quantidade de produtos com defeitos não " +
+                        "pode ser maior que a quantidade total de produtos");
+            }
+
+            StringBuilder sqlUpdateProduto = new StringBuilder();
+            sqlUpdateProduto.append("UPDATE produtos SET defeitos = ?, preco = ? WHERE id = ?");
+
+            connection = nativeScriptService.getConectionDb();
+            preparedStatement = nativeScriptService.getPreparedStatementDb(sqlUpdateProduto.toString(), connection);
+            preparedStatement.setInt(1, novaQuantidadeDefeitos);
+            preparedStatement.setDouble(2, precoProdutoAtualizado);
+            preparedStatement.setLong(3, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Erro ao atualizar quantidade de produto.", e.getMessage());
+        } finally {
+            if (connection != null) connection.close();
+            if (preparedStatement != null) preparedStatement.close();
         }
     }
 
