@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay } from 'rxjs';
-import { Produtos } from '../../type/type';
+import { PatchProduto, Produtos } from '../../type/type';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +57,10 @@ export class ProdutosService {
         produtos.reduce((max, produto) => produto.quantidadeTotal > max ? produto.quantidadeTotal : max, 0)
       )
     );
+  }
+
+  atualizarProduto(id: number, update: PatchProduto): Observable<{response: string}> {
+    return this.httpClient.patch<{response: string}>(`produtos/${id}`, update);
   }
 
   private requestProdutos(): Observable<Produtos[]> {

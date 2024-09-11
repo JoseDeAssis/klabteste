@@ -135,8 +135,15 @@ public class ProdutoModel implements Produtos {
 
         try {
             Map<String, Object> produto = (Map<String, Object>) this.getProductById(id);
+            double precoProdutoAtualizado;
 
-            double precoProdutoAtualizado = (double) product.get("preco");
+            if(product.get("preco") instanceof  Integer) {
+                precoProdutoAtualizado = (int) product.get("preco");
+            } else if(product.get("preco") instanceof  Double) {
+                precoProdutoAtualizado = (double) product.get("preco");
+            } else {
+                throw new IllegalArgumentException("O tipo de 'preco' não é suportado.");
+            }
             BigDecimal precoProdutoAtualBD = (BigDecimal) produto.get("preco");
             double precoProdutoAtual = precoProdutoAtualBD.doubleValue();
 
@@ -144,7 +151,7 @@ public class ProdutoModel implements Produtos {
                 throw new IllegalArgumentException("O preço não pode ser reduzido.");
 
             int novaQuantidadeDefeitos = (int) product.get("quantidadeDefeitos");
-            int quantidadeTotal = (int) produto.get("quantidadeDefeitos");
+            int quantidadeTotal = (int) produto.get("quantidadeTotal");
 
             if(novaQuantidadeDefeitos < 0)
                 throw new IllegalArgumentException("A quantidade de produtos com defeitos não " +

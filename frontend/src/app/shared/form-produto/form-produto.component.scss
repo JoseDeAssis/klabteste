@@ -1,0 +1,25 @@
+.form-produto {
+  max-width: 50%;
+  min-height: 67.9%;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+
+  .full-width {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+
+    .mat-success {
+      background-color: green;
+      color: #fff;
+    }
+  }
+
+}

@@ -48,7 +48,7 @@ public class ProdutosWs {
         try {
             produtos.atualizarPrecoEQuantidadeProduto(id, product);
             Map<String, String> response = new HashMap<>();
-            response.put("response", "Venda realizada com sucesso!");
+            response.put("response", "Produto atualizado com sucesso!");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

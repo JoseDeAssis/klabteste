@@ -4,6 +4,7 @@ import { CommonModule } from "@angular/common";
 import { ProdutosService } from "./services/produtos/produtos.service";
 import { HttpClientModule } from "@angular/common/http";
 import { VendasService } from "./services/vendas/vendas.service";
+import { FormularioService } from "./services/formulario/formulario.service";
 
 @NgModule({
   imports: [
@@ -12,6 +13,6 @@ import { VendasService } from "./services/vendas/vendas.service";
     HttpserviceModule
   ],
   declarations: [],
-  providers: [ProdutosService, VendasService]
+  providers: [ProdutosService, VendasService, FormularioService]
 })
 export class CoreModule {}

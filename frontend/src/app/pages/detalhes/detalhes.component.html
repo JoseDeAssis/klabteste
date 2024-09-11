@@ -1,36 +1,6 @@
-<app-container class="detalhes-page">
-  <h1>Detalhes do Produto</h1>
-
-  <app-card variant="primary" *ngIf="produto">
-    <div class="card-content">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Nome do Produto</mat-label>
-        <input matInput disabled [value]="produto.nomeProduto" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Quantidade Total do Produto</mat-label>
-        <input matInput disabled [value]="produto.quantidadeTotal" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Quantidade de Produtos com Defeitos</mat-label>
-        <input matInput disabled [value]="produto.quantidadeDefeitos" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Preço</mat-label>
-        <input
-          matInput
-          disabled
-          [value]="produto.preco | currency : 'BRL' : 'symbol' : '1.2-2'"
-        />
-      </mat-form-field>
-      <div class="card-actions">
-        <button mat-raised-button color="success" (click)="cadastrarVenda()">
-          Cadastrar Venda
-        </button>
-      </div>
-    </div>
-  </app-card>
-</app-container>
+<app-form-produto
+  [detalhesComponent]="detalhesComponent"
+  [produto]="produto"
+  (acaoRealizada)="cadastrarVenda()"
+  *ngIf="produto"
+/>

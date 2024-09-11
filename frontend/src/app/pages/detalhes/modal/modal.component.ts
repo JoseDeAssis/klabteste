@@ -1,3 +1,4 @@
+import { FormularioService } from './../../../core/services/formulario/formulario.service';
 import { Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { dadosCadastroVenda, Produtos } from '../../../core/type/type';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -14,12 +15,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class ModalComponent implements OnInit {
 
   vendaForm: FormGroup;
+  produtoForm: FormGroup;
   produto: Produtos;
   private _snackBar = inject(MatSnackBar);
 
   constructor(
     private fb: FormBuilder,
     private vendasService: VendasService,
+    private formularioService: FormularioService,
     private router: Router,
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { produto: any }
@@ -32,6 +35,7 @@ export class ModalComponent implements OnInit {
       comprador: ['', [Validators.required]],
       quantidade: [1, [Validators.required, Validators.min(1), Validators.max(this.data.produto.quantidadeDisponivelVenda)]]
     });
+    this.produtoForm = this.formularioService.getForm();
   }
 
   onSubmit(): void {
