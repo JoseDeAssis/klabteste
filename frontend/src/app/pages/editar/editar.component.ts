@@ -35,14 +35,14 @@ export class EditarComponent implements OnInit {
     const precoFormatado = parseFloat(form.get('preco').value.replace(/[R$,]/g, '').replace(',', '.'));
     const produtoAtualizado: PatchProduto = {
       preco: precoFormatado,
-      quantidadeDefeitos: Number(this.formularioService.getForm().get('quantidadeDefeitos').value)
+      quantidadeDefeitos: Number (this.formularioService.getForm().get('quantidadeDefeitos').value)
     }
 
     if(form.valid) {
       this.produtosService.atualizarProduto(this.produto.id, produtoAtualizado)
         .subscribe(
           res => {
-            this._snackBar.open(res.response);
+            this._snackBar.open(res.response, '', { duration: 3000 });
             this.router.navigate(['']);
           }
         )

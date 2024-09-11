@@ -15,4 +15,12 @@
       width: 100%;
     }
   }
+  button {
+    margin: 0 16px;
+    color: white;
+  }
+
+  .example-spacer {
+    flex: 1 1 auto;
+  }
 }

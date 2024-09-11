@@ -1,6 +1,5 @@
-import {AfterViewInit, Component, inject, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import { DadosFiltragem, Produtos } from "../../core/type/type";
-import { HttpClient } from "@angular/common/http";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
@@ -11,9 +10,9 @@ import { Router } from "@angular/router";
   templateUrl: "produtos.component.html",
   styleUrls: ['./produtos.component.scss']
 })
-export class ProdutosComponent implements OnInit {
+export class ProdutosComponent implements OnInit, AfterViewInit {
 
-  listaProdutos: MatTableDataSource<Produtos>;
+  listaProdutos: MatTableDataSource<Produtos> = new MatTableDataSource<Produtos>;
   maxPreco: number = 0;
   maxQuantidade: number = 0;
   displayedColumns: string[] = [
@@ -28,19 +27,24 @@ export class ProdutosComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  httpClient = inject(HttpClient);
-
   constructor(
     private produtosService: ProdutosService,
-    private router: Router
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
+    this.loadProducts();
+  }
+
+  ngAfterViewInit() {
+    this.listaProdutos.paginator = this.paginator;
+    this.listaProdutos.sort = this.sort;
+  }
+
+  private loadProducts() {
     this.produtosService.listar().subscribe(
       data => {
-        this.listaProdutos = new MatTableDataSource<Produtos>(data)
-        this.listaProdutos.paginator = this.paginator
-        this.listaProdutos.sort = this.sort
+        this.listaProdutos.data = data;
       }
     );
   }

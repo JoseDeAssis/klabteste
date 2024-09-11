@@ -7,6 +7,15 @@ export interface Produtos {
   preco: number
 }
 
+export interface Vendas {
+  id: number,
+  produtoId: number,
+  nomeComprador: string,
+  nomeProduto: string,
+  quantidadeComprada: number,
+  valorTotal: number
+}
+
 export interface dadosCadastroVenda {
   produtoId: number,
   quantidadeComprada: number,
