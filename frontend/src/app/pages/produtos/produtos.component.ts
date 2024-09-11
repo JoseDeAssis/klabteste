@@ -88,4 +88,8 @@ export class ProdutosComponent implements OnInit {
     this.router.navigate([`produtos/${id}`]);
   }
 
+  editar(id: number) {
+    this.router.navigate([`produtos/edit/${id}`]);
+  }
+
 }

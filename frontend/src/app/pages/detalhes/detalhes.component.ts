@@ -1,8 +1,7 @@
 import { Produtos } from './../../core/type/type';
 import { Component, OnInit } from '@angular/core';
 import { ProdutosService } from '../../core/services/produtos/produtos.service';
-import { ActivatedRoute } from '@angular/router';
-import { FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from './modal/modal.component';
 
@@ -14,7 +13,7 @@ import { ModalComponent } from './modal/modal.component';
 export class DetalhesComponent implements OnInit {
 
   produto: Produtos;
-  form: FormGroup | null = null
+  detalhesComponent = true;
 
   constructor(
     private produtosService: ProdutosService,
@@ -24,22 +23,9 @@ export class DetalhesComponent implements OnInit {
 
   ngOnInit(): void {
     const produtoId = Number(this.route.snapshot.paramMap.get('id'));
-    this.produtosService.detalharProduto(produtoId)
-      .subscribe(
-        data => {
-          this.produto = data;
-          this.carregarCampos();
-        }
-      )
-  }
 
-  carregarCampos() {
-    this.form.patchValue({
-      nome: this.produto.nomeProduto,
-      quantidadeTotal: this.produto.quantidadeTotal,
-      quantidadeDefeitos: this.produto.quantidadeDefeitos,
-      quantidadeDisponivelVendas: this.produto.quantidadeDisponivelVenda
-    })
+    this.produtosService.detalharProduto(produtoId)
+    .subscribe(data => this.produto = data)
   }
 
   cadastrarVenda() {

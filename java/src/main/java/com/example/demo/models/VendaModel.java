@@ -44,7 +44,7 @@ public class VendaModel implements Vendas {
             double precoProduto = precoProdutoBD.doubleValue();
 
             if (quantidadeComprada > quantidadeDisponivel) {
-                throw new Error("Quantidade desejada indisponível");
+                throw new IllegalArgumentException("Quantidade desejada indisponível");
             }
 
             double precoTotal = quantidadeComprada * precoProduto;

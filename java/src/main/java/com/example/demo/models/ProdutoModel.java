@@ -5,6 +5,8 @@ import com.example.demo.services.NativeScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -116,6 +118,58 @@ public class ProdutoModel implements Produtos {
             preparedStatement = nativeScriptService.getPreparedStatementDb(sqlUpdateProduto.toString(), connection);
             preparedStatement.setInt(1, quantidadeVendida);
             preparedStatement.setLong(2, produtoId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Erro ao atualizar quantidade de produto.", e.getMessage());
+        } finally {
+            if (connection != null) connection.close();
+            if (preparedStatement != null) preparedStatement.close();
+        }
+    }
+
+    @Transactional
+    public void atualizarPrecoEQuantidadeProduto(long id, Map<String, Object> product) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            Map<String, Object> produto = (Map<String, Object>) this.getProductById(id);
+            double precoProdutoAtualizado;
+
+            if(product.get("preco") instanceof  Integer) {
+                precoProdutoAtualizado = (int) product.get("preco");
+            } else if(product.get("preco") instanceof  Double) {
+                precoProdutoAtualizado = (double) product.get("preco");
+            } else {
+                throw new IllegalArgumentException("O tipo de 'preco' não é suportado.");
+            }
+            BigDecimal precoProdutoAtualBD = (BigDecimal) produto.get("preco");
+            double precoProdutoAtual = precoProdutoAtualBD.doubleValue();
+
+            if(precoProdutoAtualizado < precoProdutoAtual)
+                throw new IllegalArgumentException("O preço não pode ser reduzido.");
+
+            int novaQuantidadeDefeitos = (int) product.get("quantidadeDefeitos");
+            int quantidadeTotal = (int) produto.get("quantidadeTotal");
+
+            if(novaQuantidadeDefeitos < 0)
+                throw new IllegalArgumentException("A quantidade de produtos com defeitos não " +
+                        "pode ser negativa");
+
+            if(novaQuantidadeDefeitos > quantidadeTotal) {
+                throw new IllegalArgumentException("A quantidade de produtos com defeitos não " +
+                        "pode ser maior que a quantidade total de produtos");
+            }
+
+            StringBuilder sqlUpdateProduto = new StringBuilder();
+            sqlUpdateProduto.append("UPDATE produtos SET defeitos = ?, preco = ? WHERE id = ?");
+
+            connection = nativeScriptService.getConectionDb();
+            preparedStatement = nativeScriptService.getPreparedStatementDb(sqlUpdateProduto.toString(), connection);
+            preparedStatement.setInt(1, novaQuantidadeDefeitos);
+            preparedStatement.setDouble(2, precoProdutoAtualizado);
+            preparedStatement.setLong(3, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

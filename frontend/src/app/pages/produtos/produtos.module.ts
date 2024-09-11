@@ -35,6 +35,12 @@ const route = [{component: ProdutosComponent, path: ''}]
     ReactiveFormsModule,
     HttpserviceModule
   ],
-  declarations: [ProdutosComponent, FiltrosComplementaresComponent, LabelComponent, PrecosComponent, QuantidadeComponent]
+  declarations: [
+    ProdutosComponent,
+    FiltrosComplementaresComponent,
+    LabelComponent,
+    PrecosComponent,
+    QuantidadeComponent
+  ]
 })
 export class ProdutosModule {}

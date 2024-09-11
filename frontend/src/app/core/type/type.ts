@@ -23,3 +23,8 @@ export interface DadosFiltragem {
   precoMin: number,
   quantidadeTotal: number
 }
+
+export interface PatchProduto {
+  preco: number,
+  quantidadeDefeitos: number
+}
